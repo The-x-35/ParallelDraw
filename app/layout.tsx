@@ -12,6 +12,7 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   title: "Parallel Draw",
   description: "Create, Collaborate, Innovate",
+  icons:"favicon.ico"
 };
 
 export default function RootLayout({

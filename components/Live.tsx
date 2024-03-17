@@ -1,9 +1,9 @@
 "use client";
 import React, { useCallback, useEffect, useState } from 'react'
 import LiveCursors from './cursor/LiveCursors'
-import { useBroadcastEvent, useMyPresence, useOthers } from '@/liveblocks.config'
+import { useBroadcastEvent, useEventListener, useMyPresence, useOthers } from '@/liveblocks.config'
 import CursorChat from './cursor/CursorChat';
-import { CursorMode, CursorState, Reaction } from '@/types/type';
+import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type';
 import ReactionSelector from './reaction/ReactionButton';
 import FlyingReaction from './reaction/FlyingReaction';
 import useInterval from '@/hooks/useInterval';
@@ -19,7 +19,6 @@ const Live = () => {
     setCursorState({ mode: CursorMode.Reaction, reaction, isPressed: false });
   }, []);
   const [reactions, setReactions] = useState<Reaction[]>([]);
-
 
   useInterval(() => {
     setReactions((reactions) => reactions.filter((reaction) => reaction.timestamp > Date.now() - 4000));
@@ -47,6 +46,19 @@ const Live = () => {
       });
     }
   }, 100);
+
+  useEventListener((eventData)=>{
+    const event = eventData.event as ReactionEvent;
+    setReactions((reactions) =>
+    reactions.concat([
+      {
+        point: { x: event.x, y: event.y },
+        value: event.value,
+        timestamp: Date.now(),
+      },
+    ])
+  );
+  })
 
 
 
